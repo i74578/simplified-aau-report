@@ -25,15 +25,17 @@
   ),
 )
 
-#let _custom-header(name: none) = context {
-  let matches = query(<heading>)
+#let _is-chapter-page(tag) = {
+  let matches = query(tag)
   let current = counter(page).get()
-  let is-chapter-page = matches.any(m =>
+  return matches.any(m =>
     counter(page).at(m.location()) == current
   )
+}
 
-  if not is-chapter-page {
-    if calc.even(current.first()) {
+#let _custom-header(name: none) = context {
+  if not _is-chapter-page(<heading>) {
+    if calc.even(here().page()) {
       [#counter(page).display() of #counter(page).final().first()]
       h(1fr)
       [#name #hydra(1)]
@@ -46,25 +48,13 @@
 }
 
 #let _custom-footer = context {
-  let matches = query(<heading>)
-  let current = counter(page).get()
-  let is-chapter-page = matches.any(m =>
-    counter(page).at(m.location()) == current
-  )
-
-  if is-chapter-page {
+  if _is-chapter-page(<heading>) {
     align(center, counter(page).display())
   }
 }
 
 #let _frontmatter-custom-footer = context {
-  let matches = query(<frontmatter-heading>)
-  let current = counter(page).get()
-  let is-chapter-page = matches.any(m =>
-    counter(page).at(m.location()) == current
-  )
-
-  if is-chapter-page {
+  if _is-chapter-page(<frontmatter-heading>) {
     align(center, counter(page).display(page.numbering))
   }
 }
@@ -278,7 +268,7 @@
     grid(
       columns: (50%, 50%),
       rows: (3fr, 7fr, 30pt),
-      image("./AAUgraphics/aau_logo_en.svg", width: 90%),
+      image("./AAUgraphics/aau_logo_da.svg", width: 90%),
       align(right + horizon)[
         #strong(dk.department)\
         Aalborg Universitet\

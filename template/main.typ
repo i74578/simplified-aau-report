@@ -1,4 +1,4 @@
-#import "@preview/classic-aau-report:0.1.0": project, frontmatter, mainmatter, backmatter, appendix
+#import "@preview/classic-aau-report:0.1.1": project, frontmatter, mainmatter, backmatter, appendix
 
 #show: project.with(
   meta: (

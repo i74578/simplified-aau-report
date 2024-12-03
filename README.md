@@ -17,7 +17,7 @@ typst init @preview/classic-aau-report
 
 **NOTE:**
 The template tries to use the `Palatino Linotype` font, which is *not* available in Typst.
-It is available [here](https://github.com/Tinggaard/classic-aau-report/tree/main/fonts)
+It is available [here](https://github.com/Tinggaard/classic-aau-report/releases/tag/fonts) ([direct download](https://github.com/Tinggaard/classic-aau-report/releases/download/fonts/PalatinoLinotype.zip))
 
 To use it in the *web-app*, put the `.ttf` files anywhere in the project tree.
 
@@ -86,7 +86,7 @@ Furthermore, the template exports the shawrules
 To use it in an existing project, add the following show rule to the top of your file.
 
 ```typ
-#import "@preview/classic-aau-report:0.1.0": project, frontmatter, mainmatter, backmatter, appendix
+#import "@preview/classic-aau-report:0.1.1": project, frontmatter, mainmatter, backmatter, appendix
 
 // Any of the below can be omitted, the defaults are either empty values or CS specific
 #show: project.with(
