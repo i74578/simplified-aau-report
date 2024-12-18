@@ -35,26 +35,26 @@
 
 #let _custom-header(name: none) = context {
   if not _is-chapter-page(<heading>) {
-    if calc.even(here().page()) {
-      [#counter(page).display() of #counter(page).final().first()]
-      h(1fr)
-      [#name #hydra(1)]
-    } else {
-      hydra(2)
-      h(1fr)
-      [#counter(page).display() of #counter(page).final().first()]
-    }
+    if calc.even(here().page()) [
+      #counter(page).display() of #counter(page).final().first()
+      #h(1fr)
+      #name #hydra(1)
+    ] else [
+      #hydra(2)
+      #h(1fr)
+      #counter(page).display() of #counter(page).final().first()
+    ]
   }
 }
 
 #let _custom-footer = context {
   if _is-chapter-page(<heading>) {
-    align(center, counter(page).display())
+    align(center, counter(page).display(page.numbering))
   }
 }
 
-#let _frontmatter-custom-footer = context {
-  if _is-chapter-page(<frontmatter-heading>) {
+#let _titlepages-custom-footer = context {
+  if _is-chapter-page(<titlepages-heading>) {
     align(center, counter(page).display(page.numbering))
   }
 }
@@ -79,25 +79,23 @@
 }
 
 #let _set-chapter-style(numbering: none, name: none, body) = {
-  set heading(numbering: numbering)
+  set heading(numbering: numbering, outlined: true)
   set page(header: _custom-header(name: name))
   counter(heading).update(0) // Reset the counter
 
-  show heading.where(level: 1): h => {
+  show heading.where(level: 1): set heading(supplement: name)
+
+  show heading.where(level: 1): it => {
     clear-double-page()
     set par(first-line-indent: 0pt, justify: false)
-    block()[
-      #v(3cm)
-      #set text(size: 18pt)
-      #if name != none { // set chapter/appendix whatever if exists
-        [#name #counter(heading).display()]
-        v(.5cm)
-      }
-      #set text(size: 24pt)
-      #h.body // title of heading
-      <heading> // allow us to query this label to make header work properly
-      #v(.75cm)
-    ]
+    show: block
+    v(3cm)
+    if name != none { // set chapter/appendix whatever if exists
+      text(size: 18pt)[#it.supplement #counter(heading).display()]
+      v(.5cm)
+    }
+    text(size: 24pt)[#it.body <heading>] // allow us to query this label to make header work properly
+    v(.75cm)
   }
   body // actually show what comes afterwards
 }
@@ -119,6 +117,18 @@
 
 #let appendix(body) = {
   _set-chapter-style(numbering: "A.1", name: "Appendix", body)
+}
+
+#let custom-heading(it, p-top, p-bottom) = {
+  if it.numbering == none {
+    block(pad(top: p-top, bottom: p-bottom, it.body))
+  } else {
+    pad(top: p-top, bottom: p-bottom, grid(
+      columns: (30pt, 1fr),
+      counter(heading).display(it.numbering),
+      it.body
+    ))
+  }
 }
 
 #let project(
@@ -149,33 +159,38 @@
   show math.equation: set text(weight: 400)
   set math.equation(numbering: "(1)")
 
-  show link: underline
+  // spacing around enumerations and lists
+  show enum: set par(spacing: .5cm) // spacing around whole list
+  set enum(indent: .5cm, spacing: .5cm) // indentation and spacing between elements
+  
+  show list: set par(spacing: .5cm)
+  set list(indent: .5cm, spacing: .5cm)
+  
+  show terms: set par(first-line-indent: 0pt, spacing: 1em)
+
+  show link: it => if type(it.dest) == str { // external link
+    underline(it)
+  } else { it }
+  
   show bibliography: set par(spacing: 1em)
 
+  // Chapter styling (preface, outline etc)
+  show heading.where(level: 1): it => {
+    clear-double-page()
+    set par(first-line-indent: 0pt, justify: false)
+    show: block
+    v(3cm)
+    text(size: 24pt)[#it.body <titlepages-heading>] // label allows for header/footer to work properly
+    v(.75cm)
+  }
   // style heading with spacing before and after + spacing between number and name
-  show heading.where(level: 2): it => {
-    if (it.numbering == none) { // TODOs have no numbering
-      return
-    }
-    pad(top: 10pt, bottom: 5pt, grid(
-      columns: (30pt, 1fr),
-      counter(heading).display(it.numbering),
-      it.body)
-
-    )
-  }
-  show heading.where(level: 3): it => {
-    pad(top: 5pt, bottom: 3pt, grid(
-      columns: (30pt, 1fr),
-      counter(heading).display(it.numbering),
-      it.body)
-    )
-  }
+  show heading.where(level: 2): it => custom-heading(it, 10pt, 5pt)
+  show heading.where(level: 3): it => custom-heading(it, 5pt, 3pt)
+  set heading(outlined: false) // changed in frontmatter
 
   // can be customized with figure.where(kind: table) etc...
-  show figure: f => {
-    pad(top: 5pt, bottom: 10pt, f)
-  }
+  show figure: f => pad(top: 5pt, bottom: 10pt, f)
+
   // bold the figure title and number
   show figure.caption: c => context {
     set text(10pt)
@@ -184,16 +199,21 @@
     ])
     c.body
   }
+  
+  show outline.entry.where(level: 1): it => {
+    v(12pt, weak: true)
+    strong(it)
+  }
 
   // Front/cover page.
   page(
-    background: image("./AAUgraphics/aau_waves.svg", width: 100%, height: 100%), numbering: none,
+    background: image("/AAUgraphics/aau_waves.svg", width: 100%, height: 100%),
+    numbering: none,
     grid(
       columns: (100%), // needed to not set uneven margins
       rows: (50%, 20%, 30%),
       align(center + bottom,
-        box(fill: aau-blue, inset: 18pt, radius: 1pt, clip: false,
-        {
+        box(fill: aau-blue, inset: 18pt, radius: 1pt, clip: false, {
           set text(fill: white, 12pt)
           align(center)[
             #text(2em, weight: 700, en.title)\
@@ -208,12 +228,12 @@
         }
       )),
       none,
-      align(center, image("./AAUgraphics/aau_logo_circle_en.svg", width: 25%))
+      align(center, image("/AAUgraphics/aau_logo_circle_en.svg", width: 25%))
     )
   )
 
-  set page(numbering: "I", footer: none, margin: (inside: 2.8cm, outside: 4.1cm))
   counter(page).update(1)
+  set page(numbering: "I", footer: none, margin: (inside: 2.8cm, outside: 4.1cm))
 
   page(align(bottom)[
     #set text(size: 10pt)
@@ -226,17 +246,17 @@
 
   // English Abstract page.
   page(
-    [
-    #grid(
+    grid(
       columns: (1fr, 1fr),
       rows: (3fr, 7fr, 30pt),
       column-gutter: 6pt,
-      image("./AAUgraphics/aau_logo_en.svg", width: 90%),
+      image("/AAUgraphics/aau_logo_en.svg", width: 90%),
       align(right + horizon)[
         #strong(en.department)\
         Aalborg University\
         #link(en.department-url)
       ],
+
       grid(
         gutter: 16pt,
         [*Title:*\ #en.title],
@@ -253,11 +273,10 @@
         [*Number of Pages:* #context counter(page).final().first()],
         [*Date of Completion:*\ #datetime.today().display("[day]/[month]-[year]")],
       ),
-      [*Abstract:*\
-        #box(width: 100%, stroke: .5pt, inset: 4pt, par(justify: true, en.abstract))
-      ],
+      [*Abstract:*\ #box(width: 100%, stroke: .5pt, inset: 4pt, en.abstract)],
+
       grid.cell(colspan: 2, text(size: 10pt)[_The content of this report is freely available, but publication (with reference) may only be pursued due to agreement with the author._])
-    )]
+    )
   )
 
   clear-double-page()
@@ -268,12 +287,13 @@
     grid(
       columns: (50%, 50%),
       rows: (3fr, 7fr, 30pt),
-      image("./AAUgraphics/aau_logo_da.svg", width: 90%),
+      image("/AAUgraphics/aau_logo_da.svg", width: 90%),
       align(right + horizon)[
         #strong(dk.department)\
         Aalborg Universitet\
         #link(dk.department-url)
       ],
+
       grid(
         gutter: 16pt,
         [*Titel:*\ #dk.title],
@@ -288,38 +308,16 @@
         ],
         [*Opsalgstal:* 1],
         [*Sidetal:* #context counter(page).final().first()],
-        [*Afleveringsdato:*\ #datetime.today().display()],
+        [*Afleveringsdato:*\ #datetime.today().display("[day]/[month]-[year]")],
       ),
-      [*Resumé:*\
-        #box(width: 100%, stroke: .5pt, inset: 4pt, par(justify: true, dk.abstract))
-      ],
+      [*Resumé:*\ #box(width: 100%, stroke: .5pt, inset: 4pt, dk.abstract)],
+
       grid.cell(colspan: 2, text(size: 10pt)[_Rapportens indhold er frit tilgængeligt, men offentliggørelse (med kildeangivelse) må kun ske efter aftale med forfatterne._])
     )
   )
+  
   set text(lang: "en")
-
-  // Chapter (no number) styling (only applies to outline)
-  show heading.where(level: 1): h => {
-    clear-double-page()
-    box(
-      pad(top: 3cm, bottom: 1cm)[
-        #place(left, text(size: 24pt, h.body))
-        <frontmatter-heading>
-      ]
-    ) 
-  }
-
-  show outline.entry.where(
-    level: 1
-  ): it => {
-    v(12pt, weak: true)
-    strong(it)
-  }
-
-  // Table of contents.
-  set page(footer: _frontmatter-custom-footer)
-  page(outline(depth: 2, indent: true))
-
+  set page(footer: _titlepages-custom-footer)
 
   body
 }

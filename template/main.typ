@@ -35,19 +35,24 @@
   ),
 )
 
+// add your preface here, if so desired
+// = Preface
+// #lorem(100)
+
 // put anything here that is to be included in the frontmatter, (with roman page numbers)
 // like a list of tables, figures or todos
+#outline(indent: true, depth: 2)
 
 #show: frontmatter
 #include "chapters/introduction.typ"
 
 #show: mainmatter
 #include "chapters/problem-analysis.typ"
-#include "chapters/conclusion.typ"
 
 // in the backmatter, the chapter numbers are removed again
 // show the references here, along with other backmatter content, like a list of acronyms
 #show: backmatter
+#include "chapters/conclusion.typ"
 #bibliography("references.bib", title: "References")
 
 #show: appendix
