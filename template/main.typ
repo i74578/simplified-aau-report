@@ -1,4 +1,14 @@
-#import "@preview/classic-aau-report:0.1.1": project, frontmatter, mainmatter, backmatter, appendix
+#import "@preview/classic-aau-report:0.2.0": project, mainmatter, chapters, backmatter, appendix
+#import "setup/macros.typ": *
+
+// revision to use for add, rmv and change
+#set-revision(1)
+
+// it is also possible to apply show rules to the entire project
+// it is more or less a search and replace when applying it to a string.
+// see https://typst.app/docs/reference/styling/#show-rules
+// #show "naive": "naïve"
+// #show "Dijkstra's": smallcaps
 
 #show: project.with(
   meta: (
@@ -16,37 +26,40 @@
     field-of-study: "Computer Science",
 
     // specify if not a semester project
-    // project-type: "Bachelor's Project"
+    // project-type: "Bachelor Project"
   ),
   en: (
-    title: "An awesome project",
+    title: "An Awesome Project",
     theme: "Writing a project in Typst",
     abstract: [#lorem(50)],
 
-    // NOTE: both department and department-url can be set for BOTH en and dk
-    // the defaults are for CS at AAU
+    // NOTE: department and department-url can be set for BOTH en and dk
+    // the defaults are the department of CS
     // department: "Department of Computer Science",
     // department-url: "https://www.cs.aau.dk",
   ),
+  // omit the `dk` option completely to remove the Danish titlepage
   dk: (
-    title: "Et fantastisk projekt",
+    title: "Et Fantastisk Projekt",
     theme: "Et projekt i Typst",
     abstract: [#lorem(50)],
   ),
 )
 
-// add your preface here, if so desired
+// put anything here that is to be included in the frontmatter, (with roman page numbers)
+// like a preface, if so desired
 // = Preface
 // #lorem(100)
 
-// put anything here that is to be included in the frontmatter, (with roman page numbers)
-// like a list of tables, figures or todos
 #outline(indent: true, depth: 2)
 
-#show: frontmatter
-#include "chapters/introduction.typ"
+// the outline of todos disappears if there are no todos left
+#show-todos()
 
 #show: mainmatter
+#include "chapters/introduction.typ"
+
+#show: chapters
 #include "chapters/problem-analysis.typ"
 
 // in the backmatter, the chapter numbers are removed again
@@ -56,4 +69,4 @@
 #bibliography("references.bib", title: "References")
 
 #show: appendix
-#include "appendices/code-snippets.typ"
+#include "appendices/scripting.typ"

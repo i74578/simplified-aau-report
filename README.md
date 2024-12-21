@@ -76,17 +76,17 @@ The defaults are as follows:
 )
 ```
 
-Furthermore, the template exports the shawrules
+Furthermore, the template exports the show rules
 
-- `frontmatter`: Sets the page numbering to arabic and chapter numbering to none
-- `mainmatter`: Sets the chapter numbering `Chapter` followed by a number.
+- `mainmatter`: Sets the page numbering to arabic and chapter numbering to none
+- `chapters`: Sets the chapter numbering `Chapter` followed by a number.
 - `backmatter`: Sets the chapter numbering back to none
-- `appendix`: Sets the chapter numbering to `Appeendix` followed by a letter.
+- `appendix`: Sets the chapter numbering to `Appendix` followed by a letter.
 
-To use it in an existing project, add the following show rule to the top of your file.
+To use it in an existing project, add the following show rule.
 
 ```typ
-#import "@preview/classic-aau-report:0.1.1": project, frontmatter, mainmatter, backmatter, appendix
+#import "@preview/classic-aau-report:0.2.0": project, mainmatter, chapters, backmatter, appendix
 
 // Any of the below can be omitted, the defaults are either empty values or CS specific
 #show: project.with(
@@ -100,23 +100,22 @@ To use it in an existing project, add the following show rule to the top of your
     supervisors: "John McClane"
   ),
   en: (
-    title: "An awesome project",
+    title: "An Awesome Project",
     theme: "Writing a project in Typst",
     abstract: [],
   ),
+  // omit the `dk` option completely to remove the Danish titlepage
   dk: (
-    title: "Et fantastisk projekt",
+    title: "Et Fantastisk Projekt",
     theme: "Et projekt i Typst",
     abstract: [],
   ),
 )
 
-// #show-todos()
-
-#show: frontmatter
+#show: mainmatter
 #include "chapters/introduction.typ"
 
-#show: mainmatter
+#show: chapters
 #include "chapters/problem-analysis.typ"
 #include "chapters/conclusion.typ"
 
