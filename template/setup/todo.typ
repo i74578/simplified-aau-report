@@ -2,25 +2,40 @@
 // included as a file here whilst waiting on
 // https://github.com/ntjess/typst-drafting/pull/18
 
-#import "@preview/t4t:0.3.2": get
+#import "@preview/t4t:0.4.1": get
 
 #let note-descent = state("note-descent", (:))
 
-#let show-todos(title: "List of Todos", show-if-empty: false) = context {
-  show outline.entry.where(level: 1): it => {
-    link(it.element.location())[
-      // box with color, followed by content
-      #it.body.children.first() #it.body.children.last()
-      #box(width: 1fr, repeat[.])
-      #it.page
-    ]
-  }
-  // only show if there actually are any todos
-  if show-if-empty or counter(figure.where(kind: "todo")).final().first() > 0 {
-    outline(target: figure.where(kind: "todo"), title: title)
-  }
-}
+#let note-outline(title: "List of Todos", level: 1, row-gutter: 10pt) = context {
+  heading(level: level, title)
 
+
+  let notes = query(<margin-note>).map(note => {
+    show: box // do not break entries across pages
+    link(
+      note.location().position(),
+      grid(
+        columns: (1em, 1fr, 10pt),
+        column-gutter: 5pt,
+        align: (top, bottom, bottom),
+        box(
+          fill: note.fill,
+          stroke: note.stroke,
+          width: 1em,
+          height: 1em,
+        ),
+        // could do raw note.body, but then font 9pt by default...
+        [#get.text(sep: " ", note.body) #box(width: 1fr, repeat[.])],
+        [#note.location().page()]
+      )
+    )
+  })
+
+  grid(
+    row-gutter: row-gutter,
+    ..notes
+  )
+}
 
 #let _get-current-descent(descents-dict, page-number: auto) = {
   if page-number == auto {
@@ -33,8 +48,7 @@
 
 #let _update-descent(side, dy, anchor-y, note-rect, page-number) = {
   let height = measure(note-rect).height
-  // let dy = measure(v(dy + height)).height + anchor-y // needed if any values or not just pt.
-  let dy = dy + height + anchor-y
+  let dy = (dy + height + anchor-y).to-absolute()
   note-descent.update(old => {
     let (cnt, props) = _get-current-descent(old, page-number: page-number)
     props.insert(side, dy)
@@ -42,22 +56,6 @@
     old
   })
 }
-
-// invisible figure, s.t. we can reference it in the outline
-#let _todo-outline-entry(color, body) = hide(
-  box(
-    height: 0pt,
-    width: 0pt,
-    figure(
-      none,
-      kind: "todo",
-      // colored box in outline
-      supplement: box(fill: color, height: 11pt, width: 11pt, stroke: black + .5pt),
-      caption: get.text(body),
-      outlined: true,
-    )
-  )
-)
 
 #let _get-margin(side: auto, page-num) = {
   let page-dims = (page.width, page.height)
@@ -106,7 +104,7 @@
     (dist-to-margin - 2pt, dy + 2pt),
     (dist-to-margin + 2pt, dy + 2pt),
   )
-  
+
   dy += 1pt // todo-spacing
   let note-rect = rect(
     stroke: .5pt, 
@@ -121,8 +119,7 @@
   // Boxing prevents forced paragraph breaks
   box[
     #place(path(stroke: 1pt + color, ..path-pts))
-    #place(dx: dist-to-margin + 2pt, dy: dy - 10pt, note-rect) // lift todo a bit
-    #_todo-outline-entry(color, body)
+    #place(dx: dist-to-margin + 2pt, dy: dy - 10pt)[#note-rect<margin-note>] // lift todo a bit
   ]
   _update-descent("right", dy, anchor-y, note-rect, here().page())
 }
@@ -131,7 +128,7 @@
   let w = page.width
   let m = _get-margin(side: left, here().page()).left
   let dist-to-margin =  - anchor-x
-  
+
   let path-pts = (
     (0pt, -.2em),
     (0pt, 2pt),
@@ -140,7 +137,7 @@
     (dist-to-margin + m - 8pt, dy + 2pt),
     (dist-to-margin + m - 10pt - 2pt, dy + 2pt), // todo-margin
   )
-  
+
   dy += 1pt // todo-spacing
   let note-rect = rect(
     stroke: .5pt,
@@ -155,8 +152,7 @@
   // Boxing prevents forced paragraph breaks
   box[
     #place(path(stroke: color, ..path-pts))
-    #place(dx: dist-to-margin - 2pt, dy: dy - 10pt, note-rect) // lift todo a bit
-    #_todo-outline-entry(color, body)
+    #place(dx: dist-to-margin - 2pt, dy: dy - 10pt)[#note-rect<margin-note>] // lift todo a bit
   ]
   _update-descent("left", dy, anchor-y, note-rect, here().page())
 }

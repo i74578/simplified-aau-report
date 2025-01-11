@@ -10,6 +10,18 @@
 // #show "naive": "naïve"
 // #show "Dijkstra's": smallcaps
 
+// Initialize acronyms / glossary
+// See https://typst.app/universe/package/glossy for additional details.
+#show: init-glossary.with((
+  EV: "Electric Vehicle", // automatically infer plurality and set short = key
+  // or be specific - maybe you would like a key to actually show something different
+  web: (
+    short: "WWW", // @web will show WWW
+    long: "World Wide Web",
+  ),
+  PBL: "Problem Based Learning",
+))
+
 #show: project.with(
   meta: (
     project-group: "CS-xx-DAT-y-zz",
@@ -53,19 +65,24 @@
 
 #outline(indent: true, depth: 2)
 
-// the outline of todos disappears if there are no todos left
-#show-todos()
+// show a list of current todos
+#note-outline()
 
 #show: mainmatter
 #include "chapters/introduction.typ"
 
 #show: chapters
 #include "chapters/problem-analysis.typ"
+#include "chapters/custom-macros.typ"
 
 // in the backmatter, the chapter numbers are removed again
 // show the references here, along with other backmatter content, like a list of acronyms
 #show: backmatter
 #include "chapters/conclusion.typ"
+
+// the documentation for this package includes a few different themes
+// or even allows you to use your own custom one
+#glossary(title: "List of Acronyms")
 #bibliography("references.bib", title: "References")
 
 #show: appendix

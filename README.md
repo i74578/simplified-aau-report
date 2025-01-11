@@ -117,11 +117,11 @@ To use it in an existing project, add the following show rule.
 
 #show: chapters
 #include "chapters/problem-analysis.typ"
-#include "chapters/conclusion.typ"
 
 #show: backmatter
+#include "chapters/conclusion.typ"
 #bibliography("references.bib", title: "References")
 
 #show: appendix
-#include "appendices/code-snippets.typ"
+#include "appendices/some-appendix.typ"
 ```
