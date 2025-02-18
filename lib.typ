@@ -1,7 +1,7 @@
 #import "@preview/hydra:0.5.2": hydra
 #import "@preview/t4t:0.4.1": get
 #import "@preview/headcount:0.1.0": dependent-numbering
-#import "@preview/subpar:0.2.0"
+#import "@preview/subpar:0.2.1"
 
 #let defaults = (
   meta: (
@@ -312,7 +312,7 @@
             #en.theme\
             #v(10pt)
             #meta.participants.join(", ", last: " & ")\
-            #text(10pt)[Computer Science, #meta.project-group, #datetime.today().year()]
+            #text(10pt)[#meta.field-of-study, #meta.project-group, #datetime.today().year()]
             #v(10pt)
             #meta.project-type
           ]
