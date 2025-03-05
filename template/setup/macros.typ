@@ -1,14 +1,14 @@
 // import any packages here that you want globally accessible
 // https://typst.app/universe/search/?kind=packages
 
+// NOTE: these package-versions may be outdated - please look for newer versions
 #import "todo.typ": todo, note-outline // custom todo box
-#import "@preview/subpar:0.2.0" // subfigures
-#import "@preview/t4t:0.4.1": get // utils
+#import "@preview/subpar:0.2.1" // subfigures
 #import "@preview/headcount:0.1.0": dependent-numbering
-#import "@preview/glossy:0.5.2": * // acronyms / glossary
+#import "@preview/glossy:0.7.0": * // acronyms / glossary
 // #import "@preview/codly:1.2.0": * // listings with line numbers
-// #import "@preview/codly-languages:0.1.5": * // icons along said listings
-// #import "@preview/cetz:0.3.1" // drawing
+// #import "@preview/codly-languages:0.1.7": * // icons along said listings
+// #import "@preview/cetz:0.3.3" // drawing
 
 #let _revision = state("revision", 0)
 #let set-revision(rev) = {

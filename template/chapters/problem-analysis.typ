@@ -1,4 +1,4 @@
-#import "/setup/macros.typ": *
+#import "../setup/macros.typ": *
 = Problem Analysis
 
 It is easy to test a layout by providing blind text...

@@ -1,4 +1,4 @@
-#import "/setup/macros.typ": *
+#import "../setup/macros.typ": *
 = Scripting
 
 Generally, the #link("https://typst.app/docs/")[docs] are really great.

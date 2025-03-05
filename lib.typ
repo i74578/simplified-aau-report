@@ -1,7 +1,5 @@
-#import "@preview/hydra:0.5.2": hydra
-#import "@preview/t4t:0.4.1": get
-#import "@preview/headcount:0.1.0": dependent-numbering
-#import "@preview/subpar:0.2.1"
+#import "utils.typ"
+#import "@preview/hydra:0.6.0": hydra
 
 #let defaults = (
   meta: (
@@ -67,8 +65,8 @@
   set page(header: _custom-header(name: name))
   counter(heading).update(0) // Reset the chapter counter (appendices start at A)
   // numbering of figures and equations
-  set figure(numbering: dependent-numbering(numbering)) if numbering != none
-  set math.equation(numbering: dependent-numbering("(" + numbering + ")")) if numbering != none
+  set figure(numbering: utils.dependent-numbering(numbering)) if numbering != none
+  set math.equation(numbering: utils.dependent-numbering("(" + numbering + ")")) if numbering != none
   // set subpar.grid(numbering: depnedent-numbering(numbering)) if numbering != none
   
   // references show chapter / appendix
@@ -81,7 +79,7 @@
     counter(figure.where(kind: table)).update(0)
     counter(figure.where(kind: raw)).update(0)
     counter(math.equation).update(0)
-    
+
     set par(first-line-indent: 0pt, justify: false)
     show: block
     v(3cm)
@@ -232,9 +230,9 @@
 ) = {
   let dk-is-set = dk != (:)
 
-  meta = get.dict-merge(defaults.meta, meta)
-  en = get.dict-merge(defaults.en, en)
-  dk = get.dict-merge(defaults.dk, dk)
+  meta = utils.dict-merge(defaults.meta, meta)
+  en = utils.dict-merge(defaults.en, en)
+  dk = utils.dict-merge(defaults.dk, dk)
 
   // Set the document's basic properties.
   set document(author: meta.participants, title: en.title)
@@ -251,8 +249,8 @@
     justify: true,
   )
 
-  set figure(numbering: dependent-numbering("1.1"))
-  set math.equation(numbering: dependent-numbering("(1.1)"))
+  set figure(numbering: utils.dependent-numbering("1.1"))
+  set math.equation(numbering: utils.dependent-numbering("(1.1)"))
 
   // spacing around enumerations and lists
   show enum: set par(spacing: .5cm) // spacing around whole list

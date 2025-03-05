@@ -1,4 +1,4 @@
-#import "@preview/classic-aau-report:0.2.1": project, mainmatter, chapters, backmatter, appendix
+#import "@preview/classic-aau-report:0.3.0": project, mainmatter, chapters, backmatter, appendix
 #import "setup/macros.typ": *
 
 // revision to use for add, rmv and change
@@ -63,7 +63,7 @@
 // = Preface
 // #lorem(100)
 
-#outline(indent: true, depth: 2)
+#outline(depth: 2)
 
 // show a list of current todos
 #note-outline()

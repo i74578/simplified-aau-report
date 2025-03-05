@@ -1,14 +1,34 @@
 // Heavily modified version of https://github.com/ntjess/typst-drafting/
-// included as a file here whilst waiting on
-// https://github.com/ntjess/typst-drafting/pull/18
-
-#import "@preview/t4t:0.4.1": get
+// In time this will likely be succeeded by drafting, when the functionality is there.
 
 #let note-descent = state("note-descent", (:))
 
+// courtesy of https://github.com/jneug/typst-tools4typst/blob/32f774377534339f7bd073133fded363cb4a200f/src/get.typ#L176-L196
+// removed type() == "string" comparison
+#let get-text(element, sep: "") = {
+  if type(element) == content {
+    if element.has("text") {
+      element.text
+    } else if element.has("children") {
+      element.children.map(text).join(sep)
+    } else if element.has("child") {
+      text(element.child)
+    } else if element.has("body") {
+      text(element.body)
+    } else if repr(element.func()) == "space" {
+      " "
+    } else {
+      ""
+    }
+  } else if type(element) in (array, dictionary) {
+    return ""
+  } else {
+    str(element)
+  }
+}
+
 #let note-outline(title: "List of Todos", level: 1, row-gutter: 10pt) = context {
   heading(level: level, title)
-
 
   let notes = query(<margin-note>).map(note => {
     show: box // do not break entries across pages
@@ -25,7 +45,7 @@
           height: 1em,
         ),
         // could do raw note.body, but then font 9pt by default...
-        [#get.text(sep: " ", note.body) #box(width: 1fr, repeat[.])],
+        [#get-text(sep: " ", note.body) #box(width: 1fr, repeat[.])],
         [#note.location().page()]
       )
     )
@@ -107,7 +127,7 @@
 
   dy += 1pt // todo-spacing
   let note-rect = rect(
-    stroke: .5pt, 
+    stroke: .5pt,
     fill: color,
     width: m - 10pt, // todo-margin
     inset: 4pt,
@@ -118,7 +138,7 @@
   )
   // Boxing prevents forced paragraph breaks
   box[
-    #place(path(stroke: 1pt + color, ..path-pts))
+    #place(curve(stroke: 1pt + color, ..path-pts.map(curve.line)))
     #place(dx: dist-to-margin + 2pt, dy: dy - 10pt)[#note-rect<margin-note>] // lift todo a bit
   ]
   _update-descent("right", dy, anchor-y, note-rect, here().page())
@@ -151,7 +171,7 @@
   let foo = measure(note-rect)
   // Boxing prevents forced paragraph breaks
   box[
-    #place(path(stroke: color, ..path-pts))
+    #place(curve(stroke: color, ..path-pts.map(curve.line)))
     #place(dx: dist-to-margin - 2pt, dy: dy - 10pt)[#note-rect<margin-note>] // lift todo a bit
   ]
   _update-descent("left", dy, anchor-y, note-rect, here().page())

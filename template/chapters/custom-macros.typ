@@ -1,4 +1,4 @@
-#import "/setup/macros.typ": *
+#import "../setup/macros.typ": *
 
 = Custom Macros
 
