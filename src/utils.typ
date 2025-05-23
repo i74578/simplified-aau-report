@@ -34,3 +34,17 @@
   }
 }
 
+#let _today = datetime.today()
+#let _summer = datetime(year: _today.year(), month: 7, day: 1)
+#let _is-spring-semester = _today < _summer
+#let _semester-dk = if _is-spring-semester {
+  "Forårssemesteret"
+} else {
+  "Efterårssemesteret"
+}
+#let _semester-en = if _is-spring-semester {
+  "Spring Semester"
+} else {
+  "Fall Semester"
+}
+

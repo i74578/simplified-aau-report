@@ -45,7 +45,7 @@
           height: 1em,
         ),
         // could do raw note.body, but then font 9pt by default...
-        [#get-text(sep: " ", note.body) #box(width: 1fr, repeat[.])],
+        [#get-text(note.body) #box(width: 1fr, repeat[.])],
         [#note.location().page()]
       )
     )
