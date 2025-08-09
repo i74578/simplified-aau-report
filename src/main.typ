@@ -1,5 +1,4 @@
-#import "utils.typ"
-#import "@preview/hydra:0.6.0": hydra
+#import "utils.typ": *
 
 #let defaults = (
   meta: (
@@ -11,15 +10,11 @@
   ),
   en: (
     title: "Untitled",
-    theme: "",
-    abstract: [],
     department: "Department of Computer Science",
     department-url: "https://www.cs.aau.dk",
   ),
   dk: (
     title: "Uden titel",
-    theme: "",
-    abstract: [],
     department: "Institut for Datalogi",
     department-url: "https://www.dat.aau.dk",
   ),
@@ -27,130 +22,35 @@
 
 #let aau-blue = rgb(33, 26, 82)
 
-#let _is-chapter-page(chapter-label) = {
-  let current = counter(page).get()
-  return query(chapter-label).any(m => (
-    counter(page).at(m.location()) == current
-  ))
-}
-
-// only applies when pages are not roman numbered, thus no label argument
-#let _custom-header(name: none) = context {
-  if not _is-chapter-page(<chapter>) {
-    if calc.even(here().page()) {
-      counter(page).display("1 of 1", both: true)
-      h(1fr)
-      name
-      " "
-      hydra(1)
-    } else [
-      #hydra(2)
-      #h(1fr)
-      #counter(page).display("1 of 1", both: true)
-    ]
-  }
-}
-
-#let _custom-footer(chapter-label) = context {
-  if _is-chapter-page(chapter-label) {
-    align(center, counter(page).display(page.numbering))
-  }
-}
-
-#let clear-double-page() = {
-  set page(header: none, footer: none)
-  pagebreak(weak: true, to: "odd")
-}
-
-
-#let _set-chapter-style(numbering: none, name: none, body) = {
-  set heading(numbering: numbering, outlined: true)
-  set page(header: _custom-header(name: name))
-  counter(heading).update(0) // Reset the chapter counter (appendices start at A)
-  // numbering of figures and equations
-  set figure(numbering: utils.dependent-numbering(numbering)) if (
-    numbering != none
-  )
-  set math.equation(
-    numbering: utils.dependent-numbering("(" + numbering + ")"),
-  ) if numbering != none
-  // set subpar.grid(numbering: depnedent-numbering(numbering)) if numbering != none
-
-  // references show chapter / appendix
-  show heading.where(level: 1): set heading(supplement: name)
-
-  show heading.where(level: 1): it => {
-    clear-double-page()
-
-    counter(figure.where(kind: image)).update(0)
-    counter(figure.where(kind: table)).update(0)
-    counter(figure.where(kind: raw)).update(0)
-    counter(math.equation).update(0)
-
-    set par(first-line-indent: 0pt, justify: false)
-    show: block
-    v(3cm)
-    if name != none {
-      // set chapter/appendix whatever if exists
-      text(size: 18pt)[#it.supplement #counter(heading).display()]
-      v(.5cm)
-    }
-    text(
-      size: 24pt,
-    )[#it.body <chapter>] // allow us to query this label to make header work properly
-    v(.75cm)
-  }
-  body // actually show what comes afterwards
-}
-
-#let _custom-heading(it, p-top, p-bottom) = {
-  if it.numbering == none {
-    block(pad(top: p-top, bottom: p-bottom, it.body))
-  } else {
-    pad(
-      top: p-top,
-      bottom: p-bottom,
-      grid(
-        columns: (30pt, 1fr),
-        counter(heading).display(it.numbering), it.body,
-      ),
-    )
-  }
-}
-
 #let mainmatter(body) = {
   clear-double-page()
   set page(
     numbering: "1",
-    header: _custom-header(),
-    footer: _custom-footer(<chapter>),
+    header: custom-header(),
+    footer: custom-footer(<chapter>),
   )
   counter(page).update(1)
-  _set-chapter-style(numbering: none, name: none, body)
+  set-chapter-style(numbering: none, name: none, body)
 }
 
 #let chapters(body) = {
-  _set-chapter-style(numbering: "1.1", name: "Chapter", body)
+  set-chapter-style(numbering: "1.1", name: "Chapter", body)
 }
 
 #let backmatter(body) = {
-  _set-chapter-style(numbering: none, name: none, body)
+  set-chapter-style(numbering: none, name: none, body)
 }
 
 #let appendix(body) = {
-  _set-chapter-style(numbering: "A.1", name: "Appendix", body)
-}
-
-#let show-if-not-none(val, name) = {
-  if val != none [#name #val]
+  set-chapter-style(numbering: "A.1", name: "Appendix", body)
 }
 
 // English Abstract page.
-#let _titlepage-en(meta, en) = {
+#let titlepage-en(meta, en) = {
   let info = (
     show-if-not-none(en.title)[*Title:*\ ],
     show-if-not-none(en.theme)[*Theme:*\ ],
-    [*Project Period:*\ #_semester-en #_today.year()],
+    [*Project Period:*\ #semester-en #today.year()],
     show-if-not-none(meta.project-group)[*Project Group:*\ ],
     [*Participants:*\ #meta.participants.join("\n")],
     if type(meta.supervisors) == array [
@@ -193,12 +93,12 @@
 }
 
 // Danish Abstract page.
-#let _titelside-dk(meta, dk) = {
+#let titelside-dk(meta, dk) = {
   set text(lang: "da")
   let info = (
     show-if-not-none(dk.title)[*Titel:*\ ],
     show-if-not-none(dk.theme)[*Tema:*\ ],
-    [*Projektperiode:*\ #_semester-dk #_today.year()],
+    [*Projektperiode:*\ #semester-dk #today.year()],
     show-if-not-none(meta.project-group)[*Projektgruppe:*\ ],
     [*Deltagere:*\ #meta.participants.join("\n")],
     if type(meta.supervisors) == array [
@@ -293,11 +193,11 @@
     ],
   )
 
-  _titlepage-en(meta, en)
+  titlepage-en(meta, en)
 
   if dk-is-set {
     clear-double-page()
-    _titelside-dk(meta, dk)
+    titelside-dk(meta, dk)
   }
 
 
@@ -308,15 +208,15 @@
   meta: (:),
   en: (:),
   dk: (:),
-  is-draft: true,
+  is-draft: false,
   margins: (inside: 2.8cm, outside: 4.1cm),
   body,
 ) = {
   let dk-is-set = dk != (:)
 
-  meta = utils.dict-merge(defaults.meta, meta)
-  en = utils.dict-merge(defaults.en, en)
-  dk = utils.dict-merge(defaults.dk, dk)
+  meta = dict-merge(defaults.meta, meta)
+  en = dict-merge(defaults.en, en)
+  dk = dict-merge(defaults.dk, dk)
 
   // Set the document's basic properties.
   set document(author: meta.participants, title: en.title)
@@ -330,8 +230,8 @@
     justify: true,
   )
 
-  set figure(numbering: utils.dependent-numbering("1.1"))
-  set math.equation(numbering: utils.dependent-numbering("(1.1)"))
+  set figure(numbering: dependent-numbering("1.1"))
+  set math.equation(numbering: dependent-numbering("(1.1)"))
 
   // spacing around enumerations and lists
   show enum: set par(spacing: .5cm) // spacing around whole list
@@ -364,8 +264,8 @@
     v(.75cm)
   }
   // style heading with spacing before and after + spacing between number and name
-  show heading.where(level: 2): it => _custom-heading(it, 10pt, 5pt)
-  show heading.where(level: 3): it => _custom-heading(it, 5pt, 3pt)
+  show heading.where(level: 2): it => custom-heading(it, 10pt, 5pt)
+  show heading.where(level: 3): it => custom-heading(it, 5pt, 3pt)
   set heading(outlined: false) // changed in frontmatter
 
   // can be customized with figure.where(kind: table) etc...
@@ -387,7 +287,7 @@
     show: frontmatter.with(meta, en, dk, dk-is-set)
   }
 
-  set page(footer: _custom-footer(<titlepages-chapter>))
+  set page(footer: custom-footer(<titlepages-chapter>))
 
   body
 }

@@ -3,17 +3,20 @@
 
 // NOTE: these package-versions may be outdated - please look for newer versions
 #import "todo.typ": todo, note-outline // custom todo box
-#import "@preview/subpar:0.2.1" // subfigures
+#import "@preview/subpar:0.2.2" // subfigures
 #import "@preview/headcount:0.1.0": dependent-numbering
-#import "@preview/glossy:0.7.0": * // acronyms / glossary
-// #import "@preview/codly:1.2.0": * // listings with line numbers
-// #import "@preview/codly-languages:0.1.7": * // icons along said listings
-// #import "@preview/cetz:0.3.3" // drawing
+#import "@preview/glossy:0.8.0": * // acronyms / glossary
+// #import "@preview/codly:1.3.0": * // listings with line numbers
+// #import "@preview/codly-languages:0.1.8": * // icons along said listings
+// #import "@preview/cetz:0.3.4" // drawing
 
 #let _revision = state("revision", 0)
 #let set-revision(rev) = {
   _revision.update(r => rev)
 }
+
+#let iff = $arrow.l.r.long.double$ // or $<==>$
+#let implies = $arrow.r.long.double$
 
 #let _added-color = color.rgb("#0000ff")
 #let _removed-color = color.rgb("#ff0000")

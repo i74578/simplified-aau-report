@@ -13,14 +13,17 @@
 // Initialize acronyms / glossary
 // See https://typst.app/universe/package/glossy for additional details.
 #show: init-glossary.with((
-  EV: "Electric Vehicle", // automatically infer plurality and set short = key
-  // or be specific - maybe you would like a key to actually show something different
+  PBL: "Problem Based Learning", // will automatically infer plurality
   web: (
     short: "WWW", // @web will show WWW
     long: "World Wide Web",
   ),
-  PBL: "Problem Based Learning",
-))
+  LTS: (
+    short: "LTS",
+    long: "Labelled Transition System",
+    plural: "LTSs", // override plural explicitly
+  ),
+), term-links: true) // terms link to the index
 
 #show: project.with(
   meta: (

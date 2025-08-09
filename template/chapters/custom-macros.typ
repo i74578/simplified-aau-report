@@ -55,7 +55,7 @@ These macros can be wrapped in pretty much anything, including chapters, figures
 
 In `main.typ` you can initialize the acronyms / glossary.
 
-Invoke an acronym via the label syntax, "```typ @EV```": @EV. Subsequent uses are then short: @EV, unless used with the `:long` or `:both` suffix.
+Invoke an acronym via the label syntax, "```typ @LTS```": @LTS. Subsequent uses are then short: @LTS, unless used with the `:long` or `:both` suffix.
 
 To pluralize an acronym, use the `:pl` suffix (can be combined with the previous).
 This is show in @tab:acronyms-usage.
@@ -65,11 +65,11 @@ This is show in @tab:acronyms-usage.
     columns: 2,
     align: (_, y) => if y == 0 { center } else { left },
     [*Suffix*], [*Result*],
-    [`:pl`], [@EV:pl],
-    [`:long`], [@EV:long],
-    [`:both`], [@EV:both],
-    [`:long:pl`], [@EV:long:pl],
-    [`:both:pl`], [@EV:both:pl],
+    [`:pl`], [@LTS:pl],
+    [`:long`], [@LTS:long],
+    [`:both`], [@LTS:both],
+    [`:long:pl`], [@LTS:long:pl],
+    [`:both:pl`], [@LTS:both:pl],
   ),
   caption: [Basic syntax of invoking acronyms.],
 ) <tab:acronyms-usage>
