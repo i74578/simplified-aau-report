@@ -1,24 +1,26 @@
-#import "@preview/hydra:0.6.0": hydra
+#import "@preview/hydra:0.6.2": hydra
 
 // courtesy of https://github.com/jbirnick/typst-headcount/blob/d796ab0294d608f9746f3609a71d80b9a93499b8/lib.typ
 #let normalize-length(array, length) = {
   if array.len() > length {
     array = array.slice(0, length)
   } else if array.len() < length {
-    array += (length - array.len())*(0,)
+    array += (length - array.len()) * (0,)
   }
 
   return array
 }
 
-#let dependent-numbering(style, levels: 1) = n => { numbering(style, ..normalize-length(counter(heading).get(), levels), n) }
+#let dependent-numbering(style, levels: 1) = n => {
+  numbering(style, ..normalize-length(counter(heading).get(), levels), n)
+}
 
 
 // courtesy of https://github.com/jneug/typst-tools4typst/blob/32f774377534339f7bd073133fded363cb4a200f/src/get.typ#L176-L196
 // removed type() == "string" comparison
 #let dict-merge(..dicts) = {
   if dicts.pos().all(v => std.type(v) == dictionary) {
-  // if all-of-type("dictionary", ..dicts.pos()) {
+    // if all-of-type("dictionary", ..dicts.pos()) {
     let c = (:)
     for dict in dicts.pos() {
       for (k, v) in dict {
@@ -78,29 +80,41 @@
   }
 }
 
-#let clear-double-page() = {
-  set page(header: none, footer: none)
-  pagebreak(weak: true, to: "odd")
+#let clear-page(skip-double) = {
+  if skip-double {
+    set page(header: none, footer: none)
+    pagebreak(weak: true, to: "odd")
+  } else {
+    pagebreak(weak: true)
+  }
 }
 
 
-#let set-chapter-style(numbering: none, name: none, body) = {
+#let set-chapter-style(
+  numbering: none,
+  name: none,
+  double-page-skip: true,
+  body,
+) = {
   set heading(numbering: numbering, outlined: true)
   set page(header: custom-header(name: name))
-  counter(heading).update(0) // Reset the chapter counter (appendices start at A)
+  counter(heading).update(
+    0,
+  ) // Reset the chapter counter (appendices start at A)
   // numbering of figures and equations
   set figure(numbering: dependent-numbering(numbering)) if (
     numbering != none
   )
-  set math.equation(
-    numbering: dependent-numbering("(" + numbering + ")"),
-  ) if numbering != none
+  set math.equation(numbering: dependent-numbering("(" + numbering + ")")) if (
+    numbering != none
+  )
 
   // references show chapter / appendix
   show heading.where(level: 1): set heading(supplement: name)
 
   show heading.where(level: 1): it => {
-    clear-double-page()
+    clear-page(double-page-skip)
+
 
     counter(figure.where(kind: image)).update(0)
     counter(figure.where(kind: table)).update(0)
@@ -127,14 +141,10 @@
   if it.numbering == none {
     block(pad(top: p-top, bottom: p-bottom, it.body))
   } else {
-    pad(
-      top: p-top,
-      bottom: p-bottom,
-      grid(
-        columns: (30pt, 1fr),
-        counter(heading).display(it.numbering), it.body,
-      ),
-    )
+    pad(top: p-top, bottom: p-bottom, grid(
+      columns: (30pt, 1fr),
+      counter(heading).display(it.numbering), it.body,
+    ))
   }
 }
 

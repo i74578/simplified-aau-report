@@ -5,7 +5,7 @@
     project-group: "No group name provided",
     participants: (),
     supervisors: (),
-    field-of-study: "Computer Science",
+    field-of-study: none,
     project-type: "Semester Project",
   ),
   en: (
@@ -22,27 +22,45 @@
 
 #let aau-blue = rgb(33, 26, 82)
 
-#let mainmatter(body) = {
-  clear-double-page()
-  set page(
-    numbering: "1",
-    header: custom-header(),
-    footer: custom-footer(<chapter>),
-  )
+#let mainmatter(skip-double: true, body) = {
+  clear-page(skip-double)
+  set page(numbering: "1", header: custom-header(), footer: custom-footer(
+    <chapter>,
+  ))
   counter(page).update(1)
-  set-chapter-style(numbering: none, name: none, body)
+  set-chapter-style(
+    numbering: none,
+    name: none,
+    double-page-skip: skip-double,
+    body,
+  )
 }
 
-#let chapters(body) = {
-  set-chapter-style(numbering: "1.1", name: "Chapter", body)
+#let chapters(skip-double: true, body) = {
+  set-chapter-style(
+    numbering: "1.1",
+    name: "Chapter",
+    double-page-skip: skip-double,
+    body,
+  )
 }
 
-#let backmatter(body) = {
-  set-chapter-style(numbering: none, name: none, body)
+#let backmatter(skip-double: true, body) = {
+  set-chapter-style(
+    numbering: none,
+    name: none,
+    double-page-skip: skip-double,
+    body,
+  )
 }
 
-#let appendix(body) = {
-  set-chapter-style(numbering: "A.1", name: "Appendix", body)
+#let appendix(skip-double: true, body) = {
+  set-chapter-style(
+    numbering: "A.1",
+    name: "Appendix",
+    double-page-skip: skip-double,
+    body,
+  )
 }
 
 // English Abstract page.
@@ -87,7 +105,7 @@
         text(size: 10pt)[
           _The content of this report is freely available, but publication (with reference) may only be pursued due to agreement with the author._
         ],
-      )
+      ),
     ),
   )
 }
@@ -135,14 +153,14 @@
         text(size: 10pt)[
           _Rapportens indhold er frit tilgængeligt, men offentliggørelse (med kildeangivelse) må kun ske efter aftale med forfatterne._
         ],
-      )
+      ),
     ),
   )
   set text(lang: "en")
 }
 
 
-#let frontmatter(meta, en, dk, dk-is-set, body) = {
+#let frontmatter(meta, en, dk, dk-is-set, clear-double-page, body) = {
   // Front/cover page.
   page(
     background: image("/AAUgraphics/aau_waves.svg", width: 100%, height: 100%),
@@ -151,30 +169,33 @@
     grid(
       columns: 100%, // needed to not set uneven margins
       rows: (50%, 20%, 30%),
-      align(
-        center + bottom,
-        box(
-          fill: aau-blue,
-          inset: 18pt,
-          radius: 1pt,
-          clip: false,
-          {
-            set text(fill: white, 12pt)
-            align(center)[
-              #text(2em, weight: 700, en.title)\
-              #v(5pt)
-              #if en.theme != none [
-                #en.theme\
-                #v(10pt)
-              ]
-              #meta.participants.join(", ", last: " & ")\
-              #text(10pt)[#meta.field-of-study, #meta.project-group, #datetime.today().year()]
+      align(center + bottom, box(
+        fill: aau-blue,
+        inset: 18pt,
+        radius: 1pt,
+        clip: false,
+        {
+          set text(fill: white, 12pt)
+          align(center)[
+            #text(2em, weight: 700, en.title)\
+            #v(5pt)
+            #if en.theme != none [
+              #en.theme\
               #v(10pt)
-              #meta.project-type
             ]
-          },
-        ),
-      ),
+            #meta.participants.join(", ", last: " & ")\
+            #text(10pt)[
+              #if meta.field-of-study != none [
+                #meta.field-of-study, // trailing comma is included
+              ]
+              #meta.project-group,
+              #datetime.today().year()
+            ]
+            #v(10pt)
+            #meta.project-type
+          ]
+        },
+      )),
       none,
       align(center, image("/AAUgraphics/aau_logo_circle_en.svg", width: 25%))
     ),
@@ -182,24 +203,22 @@
 
   counter(page).update(1)
 
-  page(
-    align(bottom)[
-      #set text(size: 10pt)
-      #set par(first-line-indent: 0em)
+  // Colophon
+  page(align(bottom)[
+    #set text(size: 10pt)
+    #set par(first-line-indent: 0em)
 
-      Copyright #sym.copyright Aalborg University #datetime.today().year()\
-      #v(0.2cm)
-      This report is typeset using the Typst system.
-    ],
-  )
+    Copyright #sym.copyright Aalborg University #datetime.today().year()\
+    #v(0.2cm)
+    This report is typeset using the Typst system.
+  ])
 
   titlepage-en(meta, en)
 
   if dk-is-set {
-    clear-double-page()
+    clear-page(clear-double-page)
     titelside-dk(meta, dk)
   }
-
 
   body
 }
@@ -210,6 +229,8 @@
   dk: (:),
   is-draft: false,
   margins: (inside: 2.8cm, outside: 4.1cm),
+  clear-double-page: true,
+  font: "Palatino Linotype",
   body,
 ) = {
   let dk-is-set = dk != (:)
@@ -223,12 +244,8 @@
 
   // Set document preferences, font family, heading format etc.
   // multiple fonts specify the default and a fallback
-  set text(font: ("Palatino Linotype", "New Computer Modern"), lang: "en")
-  set par(
-    first-line-indent: 1em,
-    spacing: 0.65em,
-    justify: true,
-  )
+  set text(font: font, lang: "en")
+  set par(first-line-indent: 1em, spacing: 0.65em, justify: true)
 
   set figure(numbering: dependent-numbering("1.1"))
   set math.equation(numbering: dependent-numbering("(1.1)"))
@@ -254,7 +271,7 @@
 
   // Chapter styling (preface, outline etc)
   show heading.where(level: 1): it => {
-    clear-double-page()
+    clear-page(clear-double-page)
     set par(first-line-indent: 0pt, justify: false)
     show: block
     v(3cm)
@@ -284,7 +301,7 @@
   set page(numbering: "I", footer: none, margin: margins)
 
   if not is-draft {
-    show: frontmatter.with(meta, en, dk, dk-is-set)
+    show: frontmatter.with(meta, en, dk, dk-is-set, clear-double-page)
   }
 
   set page(footer: custom-footer(<titlepages-chapter>))

@@ -27,28 +27,24 @@
   }
 }
 
-#let note-outline(title: "List of Todos", level: 1, row-gutter: 10pt) = context {
+#let note-outline(
+  title: "List of Todos",
+  level: 1,
+  row-gutter: 10pt,
+) = context {
   heading(level: level, title)
 
   let notes = query(<margin-note>).map(note => {
     show: box // do not break entries across pages
-    link(
-      note.location().position(),
-      grid(
-        columns: (1em, 1fr, 10pt),
-        column-gutter: 5pt,
-        align: (top, bottom, bottom),
-        box(
-          fill: note.fill,
-          stroke: note.stroke,
-          width: 1em,
-          height: 1em,
-        ),
-        // could do raw note.body, but then font 9pt by default...
-        [#get-text(note.body) #box(width: 1fr, repeat[.])],
-        [#note.location().page()]
-      )
-    )
+    link(note.location().position(), grid(
+      columns: (1em, 1fr, 10pt),
+      column-gutter: 5pt,
+      align: (top, bottom, bottom),
+      box(fill: note.fill, stroke: note.stroke, width: 1em, height: 1em),
+      // could do raw note.body, but then font 9pt by default...
+      [#get-text(note.body) #box(width: 1fr, repeat[.])],
+      [#note.location().page()],
+    ))
   })
 
   grid(
@@ -63,7 +59,10 @@
   } else {
     page-number = str(page-number)
   }
-  (page-number, descents-dict.at(page-number, default: (left: 0pt, right: 0pt)))
+  (
+    page-number,
+    descents-dict.at(page-number, default: (left: 0pt, right: 0pt)),
+  )
 }
 
 #let _update-descent(side, dy, anchor-y, note-rect, page-number) = {
@@ -82,7 +81,7 @@
   let default-margin = 2.5 / 21 * calc.min(..page-dims)
   let defaults = (
     "left": default-margin,
-    "right": default-margin
+    "right": default-margin,
   )
   // no margin is specified at all
   if (page.margin == auto) {
@@ -132,14 +131,15 @@
     width: m - 10pt, // todo-margin
     inset: 4pt,
     radius: 4pt,
-    text(size: font-size,
-    fill: font-color,
-    body)
+    text(size: font-size, fill: font-color, body),
   )
   // Boxing prevents forced paragraph breaks
   box[
     #place(curve(stroke: 1pt + color, ..path-pts.map(curve.line)))
-    #place(dx: dist-to-margin + 2pt, dy: dy - 10pt)[#note-rect<margin-note>] // lift todo a bit
+    #place(
+      dx: dist-to-margin + 2pt,
+      dy: dy - 10pt,
+    )[#note-rect<margin-note>] // lift todo a bit
   ]
   _update-descent("right", dy, anchor-y, note-rect, here().page())
 }
@@ -147,7 +147,7 @@
 #let _todo-left(body, dy, anchor-x, anchor-y, font-size, font-color, color) = {
   let w = page.width
   let m = _get-margin(side: left, here().page()).left
-  let dist-to-margin =  - anchor-x
+  let dist-to-margin = -anchor-x
 
   let path-pts = (
     (0pt, -.2em),
@@ -165,19 +165,28 @@
     width: m - 10pt, // todo-margin
     inset: 4pt,
     radius: 4pt,
-    text(size: font-size, body)
+    text(size: font-size, body),
   )
 
   let foo = measure(note-rect)
   // Boxing prevents forced paragraph breaks
   box[
     #place(curve(stroke: color, ..path-pts.map(curve.line)))
-    #place(dx: dist-to-margin - 2pt, dy: dy - 10pt)[#note-rect<margin-note>] // lift todo a bit
+    #place(
+      dx: dist-to-margin - 2pt,
+      dy: dy - 10pt,
+    )[#note-rect<margin-note>] // lift todo a bit
   ]
   _update-descent("left", dy, anchor-y, note-rect, here().page())
 }
 
-#let todo(side: auto, font-size: 9pt, font-color: black, color: orange, body) = [
+#let todo(
+  side: auto,
+  font-size: 9pt,
+  font-color: black,
+  color: orange,
+  body,
+) = [
   #h(0pt) // ensure here().position() accounts for indented paragraphs
   #context {
     let pos = here().position()
@@ -201,18 +210,13 @@
     }
     let (anchor-x, anchor-y) = (pos.x - 5pt, pos.y)
 
-    let (cur-page, descents) = _get-current-descent(note-descent.get(), page-number: pos.page)
+    let (cur-page, descents) = _get-current-descent(
+      note-descent.get(),
+      page-number: pos.page,
+    )
     let cur-descent = descents.at(side)
     let dy = calc.max(0pt, cur-descent - pos.y)
 
-    margin-func(
-      body,
-      dy,
-      anchor-x,
-      anchor-y,
-      font-size,
-      font-color,
-      color
-    )
+    margin-func(body, dy, anchor-x, anchor-y, font-size, font-color, color)
   }
 ]

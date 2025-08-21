@@ -24,11 +24,11 @@ Or inside a figure:
   // it is also possible to load an external file and syntax higlight it.
   // raw(read("main.rs"), lang: "rust")
   ```rust
-fn main() {
-  println!("Hello, World!");
-}
+  fn main() {
+    println!("Hello, World!");
+  }
   ```,
-  caption: [A piece of Rust code.]
+  caption: [A piece of Rust code.],
 )
 
 
@@ -43,10 +43,16 @@ The revision can be set in `main.typ` using ```typ #set-revision(n)```.
 Doing both at once is also easy.
 How #change(1)[is this great][great is this]!
 
-#rmv(2)[Removed content in a future revision is not shown as removed yet.] // does show up
-#rmv(0)[And removed content in an old revision is completely gone!] // does not show up
+#rmv(
+  2,
+)[Removed content in a future revision is not shown as removed yet.] // does show up
+#rmv(
+  0,
+)[And removed content in an old revision is completely gone!] // does not show up
 #add(2)[Likewise with added content, I am not shown yet] // does not show up
-#add(0)[I was added in a previous iteration, and show up normally.] // does show up
+#add(
+  0,
+)[I was added in a previous iteration, and show up normally.] // does show up
 
 These macros can be wrapped in pretty much anything, including chapters, figures and tables.
 #alice[Does not flow well, rewrite later.]

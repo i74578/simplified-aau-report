@@ -23,7 +23,7 @@ If you are not limited by the amount of files in your project, you can use this 
     ..results.flatten(),
   )
   ```,
-  caption: [Loading arbitrary data into a table.]
+  caption: [Loading arbitrary data into a table.],
 )
 
 The glossary package also supports this type of loading, if you would like to manage your glossary in an external file.

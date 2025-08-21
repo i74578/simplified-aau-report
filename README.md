@@ -41,39 +41,46 @@ The `project` function takes the following (optional) arguments:
   - `department`: The department name
   - `department-url`: The department URL
 
-- `dk`: Danish project info
+- `dk`: Danish project info (can be omitted entirely)
   - `title`: The Danish title of the project
   - `theme`: The theme of the project in Danish
   - `abstract`: The Danish abstract of the project
   - `department`: The department name in Danish
   - `department-url`: The Danish department URL
 
+- `is-draft`: A boolean indicating whether or not to include the frontmatter
+- `margins`: A margin specification according to the [docs](https://typst.app/docs/reference/layout/page/#parameters-margin)
+- `clear-double-page`: Whether or not to clear to the next odd page on chapters
+- `font`: The font to use
+
 The defaults are as follows:
 
 ```typ
-#let defaults = (
-  meta: (
-    project-group: "No group name provided",
-    participants: (),
-    supervisors: (),
-    field-of-study: "Computer Science",
-    project-type: "Semester Project"
-  ),
-  en: (
-    title: "Untitled",
-    theme: "",
-    abstract: [],
-    department: "Department of Computer Science",
-    department-url: "https://www.cs.aau.dk",
-  ),
-  dk: (
-    title: "Uden titel",
-    theme: "",
-    abstract: [],
-    department: "Institut for Datalogi",
-    department-url: "https://www.dat.aau.dk",
-  ),
-)
+meta: (
+  project-group: "No group name provided",
+  participants: (),
+  supervisors: (),
+  field-of-study: none,
+  project-type: "Semester Project"
+),
+en: (
+  title: "Untitled",
+  theme: none,
+  abstract: none,
+  department: "Department of Computer Science",
+  department-url: "https://www.cs.aau.dk",
+),
+dk: (
+  title: "Uden titel",
+  theme: none,
+  abstract: none,
+  department: "Institut for Datalogi",
+  department-url: "https://www.dat.aau.dk",
+),
+is-draft: false,
+margins: (inside: 2.8cm, outside: 4.1cm),
+clear-double-page: true,
+font: "Palatino Linotype",
 ```
 
 Furthermore, the template exports the show rules
@@ -82,6 +89,9 @@ Furthermore, the template exports the show rules
 - `chapters`: Sets the chapter numbering `Chapter` followed by a number.
 - `backmatter`: Sets the chapter numbering back to none
 - `appendix`: Sets the chapter numbering to `Appendix` followed by a letter.
+
+All of the above show rules take the optional parameter `skip-double`,
+which only skips to the next page (as opposed to next *odd*) on chapters, when set to `false`.
 
 To use it in an existing project, add the following show rule.
 
@@ -108,11 +118,13 @@ To use it in an existing project, add the following show rule.
   dk: (
     title: "Et Fantastisk Projekt",
     theme: "Et projekt i Typst",
-    abstract: [],
+    abstract: lorem(50),
   ),
+  is-draft: true
 )
 
 #show: mainmatter
+// OR: #show: mainmatter.with(skip-double: false)
 #include "chapters/introduction.typ"
 
 #show: chapters

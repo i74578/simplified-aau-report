@@ -7,12 +7,12 @@ license = "MIT"
 description = "A report template for students at Aalborg University (AAU)"
 repository = "https://github.com/Tinggaard/classic-aau-report"
 keywords = [
-  "Semesterprojekt",
-  "Bachelorprojekt",
-  "Aalborg Universitet",
-  "AAU",
-  "Datalogi",
-  "Computer Science",
+"Semesterprojekt",
+"Bachelorprojekt",
+"Aalborg Universitet",
+"AAU",
+"Datalogi",
+"Computer Science",
 ]
 categories = ["report", "thesis"]
 compiler = "0.13.0"

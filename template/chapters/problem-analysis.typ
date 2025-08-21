@@ -28,10 +28,10 @@ And even a terms list (like `description` in LaTeX):
 This text is a new paragraph and is not attached to the term.
 
 / Another term: #[
-  It is possible to have multiple paragraphs on the right-hand side of a paragraph though.
+    It is possible to have multiple paragraphs on the right-hand side of a paragraph though.
 
-  Just nest it in a content block using the `#[]` notation.
-]
+    Just nest it in a content block using the `#[]` notation.
+  ]
 
 The documentation also has a #link("https://typst.app/docs/guides/guide-for-latex-users/")[guide for LaTeX users].
 
@@ -55,7 +55,7 @@ The math syntax is fundamentally different from its LaTeX counterpart.
 We can make inline math $a^2 + b^2 = c^2$.
 
 And blocked equations by adding spaces in the `$` notation, as seen in @eq:quad-polym-roots.
-$ x = (-b plus.minus sqrt(b^2 − 4 a c)) / (2 dot a)  $ <eq:quad-polym-roots>
+$ x = (-b plus.minus sqrt(b^2 − 4 a c)) / (2 dot a) $ <eq:quad-polym-roots>
 
 
 == Figures & Labels <sec:figures>
@@ -76,9 +76,9 @@ In @sec:figures we show how figures work, specifically @tab:example.
     table.hline(),
     [Alice], [25],
     [Bob], [28],
-    [Chad], [24]
+    [Chad], [24],
   ),
-  caption: [I am placed is put in the document, and may cause bad page breaks.]
+  caption: [I am placed is put in the document, and may cause bad page breaks.],
 ) <tab:example>
 
 Include an image by using `image("../figures/your-image.png")` in place of the `table()` function.
@@ -97,15 +97,14 @@ These can be individually referenced as @a, @b and @full.
     [_First image goes here_],
     caption: [
       The subcaption
-    ]
-  ), <a>,
+    ],
+  ),
+  <a>,
 
-  figure(
-    [_Second image goes here_],
-    caption: [
-      The second subcaption
-    ]
-  ), <b>,
+  figure([_Second image goes here_], caption: [
+    The second subcaption
+  ]),
+  <b>,
 
   columns: (1fr, 1fr),
   caption: [A figure composed of two sub figures.],

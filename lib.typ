@@ -1,1 +1,1 @@
-#import "src/main.typ": project, mainmatter, chapters, backmatter, appendix
+#import "src/main.typ": appendix, backmatter, chapters, mainmatter, project
