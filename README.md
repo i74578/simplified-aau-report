@@ -16,14 +16,15 @@ typst init @preview/classic-aau-report
 ```
 
 **NOTE:**
-The template tries to use the `Palatino Linotype` font, which is *not* available in Typst.
-It is available [here](https://github.com/Tinggaard/classic-aau-report/releases/tag/fonts) ([direct download](https://github.com/Tinggaard/classic-aau-report/releases/download/fonts/PalatinoLinotype.zip))
+By default the template uses the `Palatino Linotype` font, which is *not* available in Typst.
+It is available [here](https://github.com/Tinggaard/classic-aau-report/releases/tag/fonts) ([direct download](https://github.com/Tinggaard/classic-aau-report/releases/download/fonts/PalatinoLinotype.zip)).
+Or you can change the font to your liking, using the `font` argument.
 
 To use it in the *web-app*, put the `.ttf` files anywhere in the project tree.
 
 To use it *locally* specify the `--font-path` flag (or see the [docs](https://typst.app/docs/reference/text/text/#parameters-font)).
 
-## Confugiration
+## Configuration
 
 The `project` function takes the following (optional) arguments:
 
@@ -83,7 +84,7 @@ clear-double-page: true,
 font: "Palatino Linotype",
 ```
 
-Furthermore, the template exports the show rules
+Furthermore, the template exports the show rules:
 
 - `mainmatter`: Sets the page numbering to arabic and chapter numbering to none
 - `chapters`: Sets the chapter numbering `Chapter` followed by a number.
@@ -93,7 +94,7 @@ Furthermore, the template exports the show rules
 All of the above show rules take the optional parameter `skip-double`,
 which only skips to the next page (as opposed to next *odd*) on chapters, when set to `false`.
 
-To use it in an existing project, add the following show rule.
+To use it in an existing project, add the following show rules:
 
 ```typ
 #import "@preview/classic-aau-report:0.3.0": project, mainmatter, chapters, backmatter, appendix
@@ -137,3 +138,16 @@ To use it in an existing project, add the following show rule.
 #show: appendix
 #include "appendices/some-appendix.typ"
 ```
+
+## Customizing
+
+If you wish to customize the template further (for local use), clone the source and install the package locally.
+
+```bash
+git clone https://github.com/Tinggaard/classic-aau-report
+cd classic-aau-report
+# make your edits
+just install
+```
+
+This will make the package available via the `@local` namespace (`@local/classic-aau-report:0.3.0`)

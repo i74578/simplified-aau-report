@@ -10,3 +10,5 @@
 .github
 scripts
 Justfile
+fonts/*
+template/main.pdf
