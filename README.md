@@ -16,13 +16,13 @@ typst init @preview/classic-aau-report
 ```
 
 **NOTE:**
-By default the template uses the `Palatino Linotype` font, which is *not* available in Typst.
+By default the template uses the `Palatino Linotype` font, which is _not_ available in Typst.
 It is available [here](https://github.com/Tinggaard/classic-aau-report/releases/tag/fonts) ([direct download](https://github.com/Tinggaard/classic-aau-report/releases/download/fonts/PalatinoLinotype.zip)).
 Or you can change the font to your liking, using the `font` argument.
 
-To use it in the *web-app*, put the `.ttf` files anywhere in the project tree.
+To use it in the _web-app_, put the `.ttf` files anywhere in the project tree.
 
-To use it *locally* specify the `--font-path` flag (or see the [docs](https://typst.app/docs/reference/text/text/#parameters-font)).
+To use it _locally_ specify the `--font-path` flag (or see the [docs](https://typst.app/docs/reference/text/text/#parameters-font)).
 
 ## Configuration
 
@@ -92,12 +92,12 @@ Furthermore, the template exports the show rules:
 - `appendix`: Sets the chapter numbering to `Appendix` followed by a letter.
 
 All of the above show rules take the optional parameter `skip-double`,
-which only skips to the next page (as opposed to next *odd*) on chapters, when set to `false`.
+which only skips to the next page (as opposed to next _odd_) on chapters, when set to `false`.
 
 To use it in an existing project, add the following show rules:
 
 ```typ
-#import "@preview/classic-aau-report:0.3.0": project, mainmatter, chapters, backmatter, appendix
+#import "@preview/classic-aau-report:0.3.1": project, mainmatter, chapters, backmatter, appendix
 
 // Any of the below can be omitted, the defaults are either empty values or CS specific
 #show: project.with(
@@ -150,4 +150,4 @@ cd classic-aau-report
 just install
 ```
 
-This will make the package available via the `@local` namespace (`@local/classic-aau-report:0.3.0`)
+This will make the package available via the `@local` namespace (`@local/classic-aau-report:0.3.1`)
