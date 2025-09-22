@@ -1,20 +1,13 @@
 [package]
-name = "classic-aau-report"
-version = "0.3.1"
+name = "simplified-aau-report"
+version = "0.1.0"
 entrypoint = "lib.typ"
-authors = ["Jens Tinggaard <@Tinggaard>"]
+authors = [""]
 license = "MIT"
 description = "A report template for students at Aalborg University (AAU)"
-repository = "https://github.com/Tinggaard/classic-aau-report"
-keywords = [
-  "Semesterprojekt",
-  "Bachelorprojekt",
-  "Aalborg Universitet",
-  "AAU",
-  "Datalogi",
-  "Computer Science",
-]
-categories = ["report", "thesis"]
+repository = ""
+keywords = []
+categories = []
 compiler = "0.13.0"
 exclude = ["fonts", "template/main.pdf"]
 
