@@ -61,23 +61,15 @@
 
 // only applies when pages are not roman numbered, thus no label argument
 #let custom-header(name: none) = context {
-  if not is-chapter-page(<chapter>) {
-    if calc.even(here().page()) [
-      #counter(page).display("1 of 1", both: true)
-      #h(1fr)
-      #name #hydra(1)
-    ] else [
-      #hydra(2)
-      #h(1fr)
-      #counter(page).display("1 of 1", both: true)
-    ]
-  }
+
 }
 
-#let custom-footer(chapter-label) = context {
+#let custom-footer(chapter-label, name: none) = context {
   if is-chapter-page(chapter-label) {
+    // Chapter pages: centered roman numerals
     align(center, counter(page).display(page.numbering))
-  }
+  } else {
+    align(right,[#counter(page).display("1 of 1", both: true)])  }
 }
 
 #let clear-page(skip-double) = {
