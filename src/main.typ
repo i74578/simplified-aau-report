@@ -68,17 +68,19 @@
   let info = (
     show-if-not-none(en.title)[*Title:*\ ],
     show-if-not-none(en.theme)[*Theme:*\ ],
-    [*Project Period:*\ #semester-en #today.year()],
+    //[*Project Period:*\ #semester-en #today.year()],
     show-if-not-none(meta.project-group)[*Project Group:*\ ],
     [*Participants:*\ #meta.participants.join("\n")],
-    if type(meta.supervisors) == array [
-      *Supervisors:*\ #meta.supervisors.join("\n")
-    ] else [
-      *Supervisor:*\ #meta.supervisors
+    if meta.supervisors != none [
+      if type(meta.supervisors) == array [
+        *Supervisors:*\ #meta.supervisors.join("\n")
+      ] else [
+        *Supervisor:*\ #meta.supervisors
+      ]
     ],
-    [*Copies:* 1],
+    //[*Copies:* 1],
     [*Number of Pages:* #context counter(page).final().first()],
-    [*Date of Completion:*\ #datetime.today().display("[day]/[month]-[year]")],
+    [*Date of Completion:*\ #datetime.today().display("[day]/[month]/[year]")],
   )
   page(
     grid(
@@ -100,12 +102,12 @@
         [*Abstract:*\ #box(width: 100%, stroke: .5pt, inset: 4pt, en.abstract)]
       },
 
-      grid.cell(
-        colspan: 2,
-        text(size: 10pt)[
-          _The content of this report is freely available, but publication (with reference) may only be pursued due to agreement with the author._
-        ],
-      ),
+      //grid.cell(
+      //  colspan: 2,
+      //  text(size: 10pt)[
+      //    _The content of this report is freely available, but publication (with reference) may only be pursued due to agreement with the author._
+      //  ],
+      //),
     ),
   )
 }
@@ -119,14 +121,16 @@
     [*Projektperiode:*\ #semester-dk #today.year()],
     show-if-not-none(meta.project-group)[*Projektgruppe:*\ ],
     [*Deltagere:*\ #meta.participants.join("\n")],
-    if type(meta.supervisors) == array [
-      *Vejledere:*\ #meta.supervisors.join("\n")
-    ] else [
-      *Vejleder:*\ #meta.supervisors
+    if meta.supervisors != none [
+      if type(meta.supervisors) == array [
+        *Vejledere:*\ #meta.supervisors.join("\n")
+      ] else [
+        *Vejleder:*\ #meta.supervisors
+      ]
     ],
-    [*Opsalgstal:* 1],
+    //[*Opsalgstal:* 1],
     [*Sidetal:* #context counter(page).final().first()],
-    [*Afleveringsdato:*\ #datetime.today().display("[day]/[month]-[year]")],
+    [*Afleveringsdato:*\ #datetime.today().display("[day]/[month]/[year]")],
   )
   page(
     grid(
@@ -175,7 +179,7 @@
         radius: 1pt,
         clip: false,
         {
-          set text(fill: white, 12pt)
+          set text(1.3em, weight: 700, fill: white)
           align(center)[
             #text(2em, weight: 700, en.title)\
             #v(5pt)
@@ -183,13 +187,24 @@
               #en.theme\
               #v(10pt)
             ]
+            #set text(size: 1.3em, weight: 600, fill: white.mix((black, 10%)))
             #meta.participants.join(", ", last: " & ")\
+            #v(10pt)
             #text(10pt)[
               #if meta.field-of-study != none [
                 #meta.field-of-study, // trailing comma is included
               ]
-              #meta.project-group,
-              #datetime.today().year()
+              #if meta.project-group != none [
+                #meta.project-group,
+              ]
+              #set text(size: 1.3em, weight: 600, fill: white.mix((black, 10%)))
+
+              #if en.course != none [
+                #en.course\
+                #v(10pt)
+              ]
+              #set text(size: 0.9em, fill: white.mix((black, 20%)))
+              #datetime.today().display("[day]/[month]/[year]")
             ]
             #v(10pt)
             #meta.project-type
@@ -204,14 +219,14 @@
   counter(page).update(1)
 
   // Colophon
-  page(align(bottom)[
-    #set text(size: 10pt)
-    #set par(first-line-indent: 0em)
+  //page(align(bottom)[
+  //  #set text(size: 10pt)
+  //  #set par(first-line-indent: 0em)
 
-    Copyright #sym.copyright Aalborg University #datetime.today().year()\
-    #v(0.2cm)
-    This report is typeset using the Typst system.
-  ])
+  //  Copyright #sym.copyright Aalborg University #datetime.today().year()\
+  //  #v(0.2cm)
+  //  This report is typeset using the Typst system.
+  //])
 
   titlepage-en(meta, en)
 
